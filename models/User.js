@@ -53,6 +53,8 @@ User.init(
         },
         sequelize,
         underscored: true,
+        timestamps: false,
+        createdAt: false
     }
 )
 

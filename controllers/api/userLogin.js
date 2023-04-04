@@ -29,7 +29,21 @@ router.post('/logout', (req, res) => {
     }
 });
 
-router.post('/signup', (req, res) => {
-    console.log(req.body)
+router.post('/signup', async (req, res) => {
+    try {
+        const newUser = await User.create({
+            name: req.body.userName,
+            email: req.body.email,
+            password: req.body.password
+        });
+        req.session.save(() => {
+            req.session.user_id = newUser.id;
+            req.session.logged_in = true;
+            res.status(200).json({ user: newUser, message: 'Logged in successfully' });
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Signup Failed' });
+    }
 })
 module.exports = router
