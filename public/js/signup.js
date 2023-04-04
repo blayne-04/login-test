@@ -15,6 +15,14 @@ const validPW = (PW) => {
   return /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{6,64})/.test(PW);
 };
 
+const alreadyExists = async (email) => {
+  const userData = await User.findOne({ where: {email: email }})
+  if(userData){
+    return false
+  } else{
+    return true
+  }
+}
 const signUp = async (event) => {
   event.preventDefault();
 
@@ -53,8 +61,12 @@ const signUp = async (event) => {
         if(response.ok){
         document.location.replace('/')
       } else{
-        SUstatus.textContent = 'Something went wrong while signing up'
-        console.log('something went wrong while signing up')
+        const inUse = alreadyExists(email)
+        if(inUse === true){
+          SUstatus.textContent = 'Something went wrong while signing up'
+        } else{
+          SUstatus.textContent = 'Email already in use'
+        }
       }
   }
 };
